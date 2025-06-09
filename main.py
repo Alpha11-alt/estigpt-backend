@@ -64,5 +64,6 @@ async def estimate(file: UploadFile = File(...)):
 
     estimate = response["choices"][0]["message"]["content"]
     return JSONResponse(content={"estimate": estimate})
-Added /estimate route for file uploads and AI prediction
+# Added /estimate route for file uploads and AI prediction
+
 
