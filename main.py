@@ -27,15 +27,10 @@ def simple_estimator(job_description: str) -> Dict:
             "timeline": "1-2 weeks"
         }
 
+from fastapi import FastAPI
+
 app = FastAPI()
 
-class EstimateRequest(BaseModel):
-    job_description: str
-
-@app.post("/estimate")
-async def generate_estimate(request: EstimateRequest):
-    result = simple_estimator(request.job_description)
-    return {"estimate": result}
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+@app.get("/")
+def read_root():
+    return {"message": "EstiGPT backend is live!"}
