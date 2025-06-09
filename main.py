@@ -35,3 +35,32 @@ app = FastAPI()
 def read_root():
     return {"message": "EstiGPT backend is live!"}
 
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import JSONResponse
+import openai
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"message": "EstiGPT backend is live!"}
+
+@app.post("/estimate")
+async def estimate(file: UploadFile = File(...)):
+    contents = await file.read()
+    
+    try:
+        text = contents.decode("utf-8", errors="ignore")
+    except Exception as e:
+        return JSONResponse(status_code=400, content={"error": str(e)})
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "You're a cost estimator."},
+            {"role": "user", "content": f"Estimate this:\n{text}"}
+        ]
+    )
+
+    estimate = response["choices"][0]["message"]["content"]
+    return JSONResponse(content={"estimate": estimate})
